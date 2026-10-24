@@ -307,6 +307,87 @@ if (heroScene) {
 
 }
 
+/* =========================================================
+   EXPERIENCE DOCUMENTS MODAL
+========================================================= */
+
+const docsModal = document.getElementById("docs-modal");
+const docsTitle = document.getElementById("docs-title");
+const docsImage = document.getElementById("docs-image");
+const docsOpen = document.getElementById("docs-open");
+const docsClose = document.getElementById("docs-close");
+const docsTabs = document.querySelectorAll(".docs-tab");
+const docsBackdrop = document.querySelector(".docs-backdrop");
+const docItems = document.querySelectorAll(".experience-item.has-docs");
+
+let currentDocs = {};
+
+function showDoc(type) {
+
+    const src = currentDocs[type];
+
+    docsImage.src = src;
+    docsImage.alt = type === "certificate"
+        ? "Certificate"
+        : "Recommendation Letter";
+    docsOpen.href = src;
+
+    docsTabs.forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.doc === type);
+    });
+
+}
+
+function openDocs(item) {
+
+    currentDocs = {
+        certificate: item.dataset.certificate,
+        letter: item.dataset.letter
+    };
+
+    docsTitle.textContent = item.dataset.title;
+
+    showDoc("certificate");
+
+    docsModal.classList.add("open");
+    docsModal.setAttribute("aria-hidden", "false");
+    body.classList.add("no-scroll");
+
+}
+
+function closeDocs() {
+
+    docsModal.classList.remove("open");
+    docsModal.setAttribute("aria-hidden", "true");
+    body.classList.remove("no-scroll");
+
+}
+
+docItems.forEach((item) => {
+
+    item.addEventListener("click", () => openDocs(item));
+
+    item.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openDocs(item);
+        }
+    });
+
+});
+
+docsTabs.forEach((tab) => {
+    tab.addEventListener("click", () => showDoc(tab.dataset.doc));
+});
+
+docsClose.addEventListener("click", closeDocs);
+docsBackdrop.addEventListener("click", closeDocs);
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+        closeDocs();
+    }
+});
 
 /* =========================================================
    PROJECT CARD TILT
